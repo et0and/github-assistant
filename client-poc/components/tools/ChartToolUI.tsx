@@ -28,7 +28,6 @@ import GitHubDataFlow from "../flow/GitHubDataFlow";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -149,8 +148,8 @@ const MyChart: FC<{ config: ChartConfig }> = ({ config }) => {
   const getSeries = getChartSeries(config.type);
 
   const sortedRows = config.rows.sort(
-    (a: { [xAxis: string]: any }, b: { [xAxis: string]: any }) =>
-      a[xAxis] > b[xAxis] ? 1 : -1
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (a: any, b: any) => (a[xAxis] > b[xAxis] ? 1 : -1)
   );
 
   return (

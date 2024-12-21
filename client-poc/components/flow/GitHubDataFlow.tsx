@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo } from "react";
-import ReactFlow, { Node, Edge, Background, NodeTypes } from "reactflow";
+import ReactFlow, { Node, Edge, NodeTypes } from "reactflow";
 import "reactflow/dist/style.css";
 import { GitHubNode } from "./GitHubNode";
 import { DatabaseNode } from "./DatabaseNode";
@@ -20,19 +20,19 @@ const initialNodes = (owner: string, repo: string, table: string): Node[] => [
   {
     id: "1",
     type: "github",
-    position: { x: 250, y: 0 },
+    position: { x: 0, y: 0 },
     data: { label: `${owner}/${repo}` },
   },
   {
     id: "2",
     type: "database",
-    position: { x: 250, y: 150 },
+    position: { x: 0, y: 76 },
     data: { label: "PostgreSQL" },
   },
   {
     id: "3",
     type: "semanticLayer",
-    position: { x: 250, y: 300 },
+    position: { x: 0, y: 150 },
     data: {
       label: (
         <>
@@ -46,7 +46,7 @@ const initialNodes = (owner: string, repo: string, table: string): Node[] => [
   {
     id: "4",
     type: "query",
-    position: { x: 250, y: 450 },
+    position: { x: 0, y: 240 },
     data: { label: "SQL Query" },
   },
 ];
@@ -60,7 +60,7 @@ const initialEdges: Edge[] = [
 export default function GitHubDataFlow({ table }: { table: string }) {
   const { owner, repo } = useParams() as { owner: string; repo: string };
   return (
-    <div style={{ width: "100%", height: "600px" }}>
+    <div style={{ width: "100%", height: "300px" }}>
       <ReactFlow
         nodes={useMemo(
           () => initialNodes(owner, repo, table),
@@ -68,11 +68,13 @@ export default function GitHubDataFlow({ table }: { table: string }) {
         )}
         edges={initialEdges}
         nodeTypes={nodeTypes}
+        panOnDrag={false}
+        zoomOnScroll={false}
+        zoomOnPinch={false}
+        zoomOnDoubleClick={false}
         fitView
-        fitViewOptions={{ padding: 0.2 }}
-      >
-        <Background />
-      </ReactFlow>
+        fitViewOptions={{ padding: 0.1 }}
+      ></ReactFlow>
     </div>
   );
 }

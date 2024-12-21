@@ -25,6 +25,15 @@ import { MousePointerClickIcon } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React from "react";
 import GitHubDataFlow from "../flow/GitHubDataFlow";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const getColumns = (data: object[]) => {
   const [xAxis, ...yAxis] = data.reduce<string[]>((acc, row) => {
@@ -145,8 +154,8 @@ const MyChart: FC<{ config: ChartConfig }> = ({ config }) => {
   );
 
   return (
-    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-      <Chart accessibilityLayer data={config.rows}>
+    <ChartContainer config={chartConfig} className="h-[300px] w-full">
+      <Chart accessibilityLayer data={sortedRows}>
         <CartesianGrid vertical={false} />
         <XAxis
           dataKey={xAxis}
@@ -179,6 +188,81 @@ function extractTableNameFromQuery(sql: string): string | null {
   return match ? match[1] : null;
 }
 
+const MyTable: FC<{ config: ChartConfig }> = ({ config }) => {
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          {Object.keys(config.rows[0] ?? {}).map((col) => (
+            <TableHead key={col}>{col}</TableHead>
+          ))}
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {config.rows.map((row, idx) => {
+          const key = idx;
+          return (
+            <TableRow key={key}>
+              {Object.entries(row).map(([col, val]) => (
+                <TableCell key={col}>{val}</TableCell>
+              ))}
+            </TableRow>
+          );
+        })}
+      </TableBody>
+    </Table>
+  );
+};
+
+const MyChartUI: FC<{ config: ChartConfig }> = ({ config }) => {
+  return (
+    <Tabs defaultValue="chart" className="w-full">
+      <TabsList className="grid w-full grid-cols-4">
+        <TabsTrigger value="chart">Chart</TabsTrigger>
+        <TabsTrigger value="data">Data</TabsTrigger>
+        <TabsTrigger value="sql">SQL</TabsTrigger>
+        <TabsTrigger value="semantic-layer">Data Flow</TabsTrigger>
+      </TabsList>
+      <TabsContent value="chart">
+        <Card className="h-[370px]">
+          <CardHeader className="py-4 text-center">{config.title}</CardHeader>
+          <CardContent className="pb-4">
+            <MyChart config={config} />
+          </CardContent>
+        </Card>
+      </TabsContent>
+      <TabsContent value="data">
+        <Card className="h-[370px] overflow-y-auto">
+          <CardHeader className="py-4 text-center">{config.title}</CardHeader>
+          <CardContent className="pb-4">
+            <MyTable config={config} />
+          </CardContent>
+        </Card>
+      </TabsContent>
+      <TabsContent value="sql">
+        <Card className="bg-muted/50 h-[370px]">
+          <CardHeader className="py-4 text-center">{config.title}</CardHeader>
+          <CardContent className="pb-4">
+            <pre className="whitespace-pre-wrap">
+              <code>{config.sql}</code>
+            </pre>
+          </CardContent>
+        </Card>
+      </TabsContent>
+      <TabsContent value="semantic-layer">
+        <Card className="h-[370px]">
+          <CardHeader className="py-4 text-center">{config.title}</CardHeader>
+          <CardContent className="pb-4">
+            <GitHubDataFlow
+              table={extractTableNameFromQuery(config.sql) ?? "Relta"}
+            />
+          </CardContent>
+        </Card>
+      </TabsContent>
+    </Tabs>
+  );
+};
+
 export const ChartToolUI = makeAssistantToolUI<
   Record<string, never>,
   ChartConfig
@@ -197,36 +281,10 @@ export const ChartToolUI = makeAssistantToolUI<
       return (
         <div className="flex items-center gap-1">
           <MousePointerClickIcon className="size-4" />
-          <span>Queried Relta</span>
+          <span>Queried Relta - No data available</span>
         </div>
       );
 
-    return (
-      <Tabs defaultValue="chart" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="chart">Chart</TabsTrigger>
-          <TabsTrigger value="sql">Generated SQL</TabsTrigger>
-          <TabsTrigger value="semantic-layer">Data Flow</TabsTrigger>
-        </TabsList>
-        <TabsContent value="chart">
-          <Card>
-            <CardHeader className="py-4 text-center">{result.title}</CardHeader>
-            <CardContent className="pb-4">
-              <MyChart config={result} />
-            </CardContent>
-          </Card>
-        </TabsContent>
-        <TabsContent value="sql">
-          <pre className="whitespace-pre-wrap border rounded-lg p-4 bg-muted/50">
-            <code>{result.sql}</code>
-          </pre>
-        </TabsContent>
-        <TabsContent value="semantic-layer">
-          <GitHubDataFlow
-            table={extractTableNameFromQuery(result.sql) ?? "Relta"}
-          />
-        </TabsContent>
-      </Tabs>
-    );
+    return <MyChartUI config={result} />;
   },
 });

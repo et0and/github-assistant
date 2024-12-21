@@ -6,7 +6,7 @@ import { makeMarkdownText } from "@assistant-ui/react-markdown";
 import { ChartToolUI } from "./tools/ChartToolUI";
 import { TextToolUI } from "./tools/TextToolUI";
 import { create } from "zustand";
-import { GitPullRequest, LoaderCircleIcon, LoaderIcon } from "lucide-react";
+import { GitPullRequest, LoaderCircleIcon } from "lucide-react";
 
 const MarkdownText = makeMarkdownText();
 

@@ -74,7 +74,7 @@ export default async function Home({
               </Suspense>
             </div>
           </div>
-          <div className="flex-grow">
+          <div className="flex-grow overflow-hidden">
             <MyAssistant owner={owner} repo={repo} />
           </div>
         </main>

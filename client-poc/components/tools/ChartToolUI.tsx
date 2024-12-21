@@ -139,6 +139,11 @@ const MyChart: FC<{ config: ChartConfig }> = ({ config }) => {
   const Chart = getChart(config.type);
   const getSeries = getChartSeries(config.type);
 
+  const sortedRows = config.rows.sort(
+    (a: { [xAxis: string]: any }, b: { [xAxis: string]: any }) =>
+      a[xAxis] > b[xAxis] ? 1 : -1
+  );
+
   return (
     <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
       <Chart accessibilityLayer data={config.rows}>
@@ -197,7 +202,7 @@ export const ChartToolUI = makeAssistantToolUI<
       );
 
     return (
-      <Tabs defaultValue="account" className="w-full">
+      <Tabs defaultValue="chart" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="chart">Chart</TabsTrigger>
           <TabsTrigger value="sql">Generated SQL</TabsTrigger>

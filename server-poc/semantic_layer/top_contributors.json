@@ -1,0 +1,31 @@
+{
+  "name": "top_contributors",
+  "description": "This metric lists the top contributors to a specific repository based on the number of commits they have made.",
+  "datasource": "commits",
+  "dimensions": [
+    {
+      "name": "author__user__login",
+      "description": "The login of the author who made the commit.",
+      "categories": null,
+      "dtype": "string"
+    },
+    {
+      "name": "author__name",
+      "description": "The name of the author who made the commit.",
+      "categories": null,
+      "dtype": "string"
+    }
+  ],
+  "measures": [
+    {
+      "name": "commit_count",
+      "description": "The total number of commits made by the author.",
+      "expr": "COUNT(commits.commits.oid)"
+    }
+  ],
+  "sample_questions": [
+    "Who are the top contributors to the langchain-ai/langchain repository?",
+    "List the contributors with the most commits to a repository."
+  ],
+  "sql_to_underlying_datasource": "SELECT author__user__login, author__name, COUNT(oid) as commit_count FROM commits.commits GROUP BY author__user__login, author__name ORDER BY commit_count DESC"
+}

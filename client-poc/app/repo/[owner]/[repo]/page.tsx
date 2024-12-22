@@ -22,10 +22,7 @@ const EnsureRepoIsLoaded: FC<{
     const startTime = Date.now();
     while (true) {
       const info = await client.getRepoInfo();
-      if (
-        info.last_pipeline_run !== null ||
-        info.pipeline_status === "SUCCESS"
-      ) {
+      if (info.pipeline_status === "SUCCESS") {
         return null;
       }
 
